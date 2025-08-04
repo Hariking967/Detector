@@ -18,13 +18,8 @@
 
     {% if desc %}
         <div>
-            <h3>Description:</h3>
-            <p>Name: {{ desc.Name|default:"Missing Name" }}</p>
-            <p>Type of shop: {{ desc.Type_of_shop|default:"Missing Type of shop" }}</p>
-            <p>Description: {{ desc.Description|default:"Missing Description" }}</p>
-            <p>Address: {{ desc.Address|default:"Missing Address" }}</p>
-            <p>Contact: {{ desc.Contact|default:"Missing Contact" }}</p>
-            <p>Useful info: {{ desc.Other|default:"Missing Other" }}</p>
+            <h3>Response:</h3>
+            {{ desc|safe }}
         </div>
     {% else %}
         <p>No description.</p>
