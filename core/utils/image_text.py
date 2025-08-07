@@ -45,7 +45,7 @@ def simple_llm(llm, msg, *prompts):
     return response['choices'][0]['message']['content']
 def yolo_desc(img):
     from ultralytics import YOLO
-    model = YOLO('models/yolov8n.pt')
+    model = YOLO('models/best.pt')
     results = model(img)
     labels = []
     for box in results[0].boxes:

@@ -25,7 +25,11 @@ SECRET_KEY = 'django-insecure-h)@1cm4#br93rch#kb4z$dnm3n#gv7@z7dthc@rs@-1p^d9g%8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'fish-polite-totally.ngrok-free.app',
+]
 
 
 # Application definition
@@ -48,6 +52,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://fish-polite-totally.ngrok-free.app",  # with https
 ]
 
 ROOT_URLCONF = 'Detector.urls'
