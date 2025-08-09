@@ -26,7 +26,7 @@ def image_to_description(llm, img, msg):
     print(content)
     response = llm.create_chat_completion(
         messages=[
-            {'role':"system", "content":"You are a helpful assistant that takes in a gibberish text which was extracted from a bill board image but as it is noisy you have to construct a proper description for that noisy unformatted text provided to you. Especially extract the name, type and a short descrioption of the type of the shop, address and contact info if provided. Few Notes make the response professional just in this format *Name: --, Type of shop: --, Description: --, Adress:--, Contact:--,Other: info like offers or something like that*. Important: Return as a string, 'Promp Message: ---' should be read and take action after the name type of shop only."},
+            {'role':"system", "content":"You are a helpful assistant that takes in a gibberish text which was extracted from a bill board image but as it is noisy you have to construct a proper description for that noisy unformatted text provided to you. Especially extract the name, type and a short descrioption of the type of the shop, address and contact info if provided. Few Notes make the response professional just in this format *Name: --, Type of shop: --, Description: --, Adress:--, Contact:--,Other: info like offers or something like that*. Important: Return as a string, 'Promp Message: ---' should be read and take action after the name type of shop only. Very IMPORTANT: Only reply and correct when you get the gibberish text do not make your own text"},
             {'role':'user', 'content':content + f"Prompt message: {msg}"}
         ]
     )
@@ -45,15 +45,23 @@ def simple_llm(llm, msg, *prompts):
     return response['choices'][0]['message']['content']
 def yolo_desc(img):
     from ultralytics import YOLO
-    model = YOLO('models/best.pt')
-    results = model(img)
+    import os
+    from collections import Counter
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    model_files = ["yolov8n.pt", "best.pt", "grocery.pt"]
     labels = []
-    for box in results[0].boxes:
-        cls_id = int(box.cls[0])
-        class_name = results[0].names[cls_id]
-        labels.append(class_name)
+    for model_file in model_files:
+        model_path = os.path.join(current_dir, "models", model_file)
+        model = YOLO(model_path)
+        results = model(img, conf=0.75)
+        for box in results[0].boxes:
+            cls_id = int(box.cls[0])
+            class_name = results[0].names[cls_id]
+            labels.append(class_name)
     counts = Counter(labels)
-    grouped_description = ", ".join([f"{v} {k}{'s' if v > 1 else ''}" for k, v in counts.items()])
+    grouped_description = ", ".join(
+        [f"{v} {k}{'s' if v > 1 else ''}" for k, v in counts.items()]
+    )
     print(f"yolo returned: {grouped_description}")
     return f"The following objects were detected in the image: {grouped_description}."
 
